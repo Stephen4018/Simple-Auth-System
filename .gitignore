@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Simple_Authentication_System/.vs
+/Simple_Authentication_System/obj
+/Domain/obj
+/Simple_Authentication_System_Application/obj
