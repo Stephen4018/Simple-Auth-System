@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Simple_Authentication_System_Domain.csproj" />
+  </ItemGroup>
+
 </Project>
