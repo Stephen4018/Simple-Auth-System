@@ -8,3 +8,6 @@
 /Simple_Authentication_System_Application/obj
 /Simple_Authentication_System/bin/Debug/net8.0
 /Simple_Authentication_System_Infrastructure/obj
+/Domain/bin/Debug/net8.0
+/Simple_Authentication_System_Application/bin/Debug/net8.0
+/Simple_Authentication_System_Infrastructure/bin/Debug/net8.0
