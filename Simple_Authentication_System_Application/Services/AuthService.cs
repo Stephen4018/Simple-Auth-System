@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Serilog;
 using Simple_Authentication_System_Application.Dtos;
 using Simple_Authentication_System_Application.Interfaces;
 using Simple_Authentication_System_Domain.Common;
@@ -16,6 +17,7 @@ namespace Simple_Authentication_System_Application.Services
         private readonly IUnitofWork _unitofWork;
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
+        //private readonly ILogger _logger;
         public AuthService(IUnitofWork unitofWork, IPasswordService passwordService, ITokenService tokenService)
         {
             _unitofWork = unitofWork;
@@ -104,6 +106,8 @@ namespace Simple_Authentication_System_Application.Services
                     Username = registerDto.Username,
                 };
 
+                
+
                 await _unitofWork.UserRepository.AddAsync(user);
                 await _unitofWork.CompleteAsync();
 
@@ -111,18 +115,19 @@ namespace Simple_Authentication_System_Application.Services
                 string token = _tokenService.CreateToken(user);
 
                 var AuthResponse = new AuthResponseDto();
-                AuthResponse.Token = token;
                 AuthResponse.User.Id = user.Id;
                 AuthResponse.User.Username = user.Username;
                 AuthResponse.User.Email = user.Email;
                 AuthResponse.User.CreatedAt = user.CreatedAt;
-                AuthResponse.Expiration = DateTime.UtcNow.AddDays(7);
+                //AuthResponse.Expiration = DateTime.UtcNow.AddDays(7);
+                //AuthResponse.Token = token;
+
 
                 return new SuccessApiResponse<object>("User Created Successfully", AuthResponse, 200);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new ApiResponse<object>("An error occurred while Creating User", null, 400);
+                return new ApiResponse<object>($"An error occurred while Creating User {ex.Message}", null, 400);
             }
         }
     }
