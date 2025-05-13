@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Simple_Authentication_System_Api;
+using Simple_Authentication_System_Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ if (isSwaggerEnabled == 1)
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

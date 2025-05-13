@@ -6,6 +6,7 @@ using Simple_Authentication_System_Application.Interfaces;
 using Simple_Authentication_System_Domain.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,12 +28,11 @@ namespace Simple_Authentication_System_Application.Services
 
         public async Task<ApiResponse<object>> GetUserByIdAsync(Guid userId)
         {
-            try
-            {
+            
                 var user = await _unitofWork.UserRepository.GetByIdAsync(userId);
                 if (user == null)
                 {
-                    throw new ApplicationException("User not found");
+                    throw new ValidationException("User not found");
                 }
 
                 var response = new UserDto();
@@ -42,17 +42,12 @@ namespace Simple_Authentication_System_Application.Services
                 response.CreatedAt = user.CreatedAt;
 
                 return new SuccessApiResponse<object>("User Fetched Successfully", response, 200);
-            }
-            catch (Exception)
-            {
-                return new ApiResponse<object>("error occurred while Fetching USer", null, 400);
-            }
+            
         }
 
         public async Task<ApiResponse<object>> LoginAsync(LoginUserDto loginDto)
         {
-            try
-            {
+            
                 var user = await _unitofWork.UserRepository.GetUserByEmailAsync(loginDto.Email);
                 if (user == null)
                 {
@@ -80,11 +75,9 @@ namespace Simple_Authentication_System_Application.Services
                 AuthResponse.User.CreatedAt = user.CreatedAt;
                 //AuthResponse.Expiration = DateTime.UtcNow.AddDays(7);
                 return new SuccessApiResponse<object>("LoggedIn Successfully", AuthResponse, 200);
-            }
-            catch (Exception)
-            {
+            
                 return new ApiResponse<object>("An error occurred while Logging in", null, 400);
-            }
+            
         }
 
         public async Task<ApiResponse<object>> RegisterUserAsync(RegisterUserDto registerDto)

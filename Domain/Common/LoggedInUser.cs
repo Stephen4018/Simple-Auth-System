@@ -18,7 +18,7 @@ namespace Simple_Authentication_System_Domain.Common
         {
             get
             {
-                if ((Identity is ClaimsIdentity identity))
+                if (!(Identity is ClaimsIdentity identity))
                     return null;
                 var claims = Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
                 return claims!.Value;
