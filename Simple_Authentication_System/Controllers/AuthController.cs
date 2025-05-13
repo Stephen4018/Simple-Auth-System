@@ -55,7 +55,7 @@ namespace Simple_Authentication_System_Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = CurrentUser.UserId;
             if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out Guid userGuid))
             {
                 return Unauthorized();

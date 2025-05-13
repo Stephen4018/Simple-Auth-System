@@ -78,7 +78,7 @@ namespace Simple_Authentication_System_Application.Services
                 AuthResponse.User.Username = user.Username;
                 AuthResponse.User.Email = user.Email;
                 AuthResponse.User.CreatedAt = user.CreatedAt;
-                AuthResponse.Expiration = DateTime.UtcNow.AddDays(7);
+                //AuthResponse.Expiration = DateTime.UtcNow.AddDays(7);
                 return new SuccessApiResponse<object>("LoggedIn Successfully", AuthResponse, 200);
             }
             catch (Exception)
