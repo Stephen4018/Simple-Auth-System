@@ -144,7 +144,9 @@ This project follows the Onion Architecture with the following layers:
 ## Testing
 
 A Postman collection is included in the repository to test all endpoints. Import the collection to Postman and use the following steps:
+## Postman route is below, check this file path in the project to get to postman collection
 
+## Simple-Auth-System\Simple_Authentication_System\Auth System API.postman_collection.json"
 1. Register a new user using the "Register User" request
 2. Login using the "Login" request (token will be automatically saved to the collection variables)
 3. Test protected endpoints using the "Get Current User" and "Validate Token" requests
