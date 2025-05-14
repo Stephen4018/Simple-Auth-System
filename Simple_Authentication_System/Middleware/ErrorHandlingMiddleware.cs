@@ -9,10 +9,12 @@ namespace Simple_Authentication_System_Api.Middleware
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<ErrorHandlingMiddleware> _logger;
 
-        public ErrorHandlingMiddleware(RequestDelegate next)
+        public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -27,6 +29,7 @@ namespace Simple_Authentication_System_Api.Middleware
                 var response = context.Response;
                 response.ContentType = "application/json";
                 var responseModel = new ApiResponse<object>(error.Message ?? "An error occured", error?.Message, 500);
+                _logger.LogError($"Error: {error.Message} \n {error}");
                 switch (error)
                 {
                     //case ApiException e:

@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Simple_Authentication_System_Application.Dtos;
 using Simple_Authentication_System_Application.Interfaces;
@@ -18,12 +19,14 @@ namespace Simple_Authentication_System_Application.Services
         private readonly IUnitofWork _unitofWork;
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
-        //private readonly ILogger _logger;
-        public AuthService(IUnitofWork unitofWork, IPasswordService passwordService, ITokenService tokenService)
+        private readonly ILogger<AuthService> _logger;
+        public AuthService(IUnitofWork unitofWork, IPasswordService passwordService, ITokenService tokenService, ILogger<AuthService> logger)
         {
             _unitofWork = unitofWork;
             _passwordService = passwordService;
             _tokenService = tokenService;
+            _logger = logger;
+
         }
 
         public async Task<ApiResponse<object>> GetUserByIdAsync(Guid userId)
@@ -47,17 +50,17 @@ namespace Simple_Authentication_System_Application.Services
 
         public async Task<ApiResponse<object>> LoginAsync(LoginUserDto loginDto)
         {
-            
+            _logger.LogInformation("starting login");
                 var user = await _unitofWork.UserRepository.GetUserByEmailAsync(loginDto.Email);
                 if (user == null)
                 {
-                    throw new ApplicationException("Invalid Credentials");
+                    throw new UnauthorizedAccessException("Invalid Credentials");
                 }
 
                 bool isPasswordValid = _passwordService.VerifyPassword(loginDto.Password, user.PasswordHash);
                 if(!isPasswordValid)
                 {
-                    throw new ApplicationException("Invalid Credentials");
+                    throw new UnauthorizedAccessException("Invalid Credentials");
                 }
 
                 user.LastLogin = DateTime.UtcNow;
@@ -76,14 +79,11 @@ namespace Simple_Authentication_System_Application.Services
                 //AuthResponse.Expiration = DateTime.UtcNow.AddDays(7);
                 return new SuccessApiResponse<object>("LoggedIn Successfully", AuthResponse, 200);
             
-                return new ApiResponse<object>("An error occurred while Logging in", null, 400);
-            
         }
 
         public async Task<ApiResponse<object>> RegisterUserAsync(RegisterUserDto registerDto)
         {
-            try
-            {
+           
                 var ifUserExist = await _unitofWork.UserRepository.UserExistsAsync(registerDto.Email, registerDto.Username);
                 if (ifUserExist)
                 {
@@ -116,12 +116,6 @@ namespace Simple_Authentication_System_Application.Services
                 //AuthResponse.Token = token;
 
 
-                return new SuccessApiResponse<object>("User Created Successfully", AuthResponse, 200);
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse<object>($"An error occurred while Creating User {ex.Message}", null, 400);
-            }
-        }
+                return new SuccessApiResponse<object>("User Created Successfully", AuthResponse, 200);        }
     }
 }

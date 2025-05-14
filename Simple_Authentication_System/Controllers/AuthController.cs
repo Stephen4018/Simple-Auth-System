@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Simple_Authentication_System_Application.Dtos;
 using Simple_Authentication_System_Application.Interfaces;
+using Simple_Authentication_System_Domain.Common;
 using System.Security.Claims;
 
 namespace Simple_Authentication_System_Api.Controllers
@@ -18,9 +19,8 @@ namespace Simple_Authentication_System_Api.Controllers
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<AuthResponseDto>> Register(RegisterUserDto registerDto)
+        [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), 201)]
+        public async Task<IActionResult> Register(RegisterUserDto registerDto)
         {
             try
             {
@@ -34,26 +34,17 @@ namespace Simple_Authentication_System_Api.Controllers
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<AuthResponseDto>> Login(LoginUserDto loginDto)
+        [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), 200)]
+        public async Task<IActionResult> Login(LoginUserDto loginDto)
         {
-            try
-            {
-                var result = await _authService.LoginAsync(loginDto);
-                return Ok(result);
-            }
-            catch (ApplicationException)
-            {
-                return Unauthorized(new { message = "Invalid credentials" });
-            }
+            var result = await _authService.LoginAsync(loginDto);
+            return Ok(result);
         }
 
         [Authorize]
         [HttpGet("GetLoggedinUser")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        [ProducesResponseType(typeof(ApiResponse<UserDto>), 200)]
+        public async Task<IActionResult> GetCurrentUser()
         {
             var userId = CurrentUser.UserId;
             if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out Guid userGuid))
@@ -74,8 +65,7 @@ namespace Simple_Authentication_System_Api.Controllers
 
         [Authorize]
         [HttpGet("validate")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiResponse<bool>), 200)]
         public ActionResult ValidateToken()
         {
             return Ok(new { isValid = true });

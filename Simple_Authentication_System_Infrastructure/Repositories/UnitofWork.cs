@@ -1,4 +1,6 @@
 ﻿using Domain.Interfaces;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using Simple_Authentication_System_Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -12,10 +14,13 @@ namespace Simple_Authentication_System_Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context;
         private IUserRepository _userRepository;
+        private readonly ILogger<UnitOfWork> _logger;
 
-        public UnitOfWork(ApplicationDbContext context)
+
+        public UnitOfWork(ApplicationDbContext context, ILogger<UnitOfWork> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IUserRepository UserRepository => _userRepository ??= new UserRepository(_context);

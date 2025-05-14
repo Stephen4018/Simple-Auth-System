@@ -1,11 +1,17 @@
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using Simple_Authentication_System_Api;
 using Simple_Authentication_System_Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .Enrich.FromLogContext()
+    .CreateLogger();
 
+builder.Host.UseSerilog();
 builder.Services.AddControllers();
 builder.Services.AddServices(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);

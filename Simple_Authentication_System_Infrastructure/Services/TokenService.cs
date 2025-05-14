@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -52,7 +53,7 @@ namespace Simple_Authentication_System_Infrastructure.Services
             catch (Exception ex)
             {
 
-                throw new ApplicationException($"CreateTokenError: {ex.Message}");
+                throw new ValidationException($"CreateTokenError: {ex.Message}");
             }
         }
 
