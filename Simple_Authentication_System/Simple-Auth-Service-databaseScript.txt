@@ -1,0 +1,46 @@
+CREATE DATABASE "Simple_Auth_Service"
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LOCALE_PROVIDER = 'libc'
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+
+
+
+
+-- Table: public.Users
+
+-- DROP TABLE IF EXISTS public."Users";
+
+CREATE TABLE IF NOT EXISTS public."Users"
+(
+    "Id" uuid NOT NULL,
+    "Username" character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    "Email" character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    "PasswordHash" text COLLATE pg_catalog."default" NOT NULL,
+    "CreatedAt" timestamp with time zone NOT NULL,
+    "LastLogin" timestamp with time zone,
+    CONSTRAINT "Users_pkey" PRIMARY KEY ("Id")
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public."Users"
+    OWNER to postgres;
+-- Index: IX_Users_Email
+
+-- DROP INDEX IF EXISTS public."IX_Users_Email";
+
+CREATE UNIQUE INDEX IF NOT EXISTS "IX_Users_Email"
+    ON public."Users" USING btree
+    ("Email" COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
+-- Index: IX_Users_Username
+
+-- DROP INDEX IF EXISTS public."IX_Users_Username";
+
+CREATE UNIQUE INDEX IF NOT EXISTS "IX_Users_Username"
+    ON public."Users" USING btree
+    ("Username" COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
